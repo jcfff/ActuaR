@@ -1,6 +1,5 @@
 #rm(list=ls())
 library(CASdatasets)
-# library(lubridate)
 library(sqldf)
 library(tcltk)
 library(fitdistrplus)
@@ -55,6 +54,7 @@ Prep_Calib_Freq=function(Nb_sinistre, Premium, Factor){
   tmp
 }
 
+# Calibration Frequency: By Guarantee
 Nb_Guarantee=Nb_sinistre(sev03)
 Freq_Windscreen=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Windscreen")
 Freq_Damage=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Damage")
@@ -63,17 +63,16 @@ Freq_TPL=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "TPL")
 Freq_Theft=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Theft")
 Freq_Other=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Other")
 
-
-# Severity: By Guarantee
-est_Damage=calib_sev_distr(sev03,"Damage",point_ajust=5)
-est_TPL=calib_sev_distr(sev03,"TPL",point_ajust=5)
-est_Windscreen=calib_sev_distr(sev03,"Windscreen",point_ajust=4.5)
-est_Fire=calib_sev_distr(sev03,"Fire",point_ajust=6,size=10)
-est_Theft=calib_sev_distr(sev03,"Theft",point_ajust=5)
-est_Other=calib_sev_distr(sev03,"Other",point_ajust=5,ysup=1)
+# Calibration Severity: By Guarantee
+Est_Windscreen=calib_Sev(sev03,"Windscreen",point_ajust=4.5)
+Est_Damage=calib_Sev(sev03,"Damage",point_ajust=5)
+Est_Fire=calib_Sev(sev03,"Fire",point_ajust=6,size=10)
+Est_TPL=calib_Sev(sev03,"TPL",point_ajust=5)
+Est_Theft=calib_Sev(sev03,"Theft",point_ajust=5)
+Est_Other=calib_Sev(sev03,"Other",point_ajust=5,ysup=1)
 
 # function for calibration of the distribution of payments by guarantee
-calib_sev_distr=function(Severity,Factor,point_ajust=0,size=30,ysup=0.8){
+calib_Sev=function(Severity,Factor,point_ajust=0,size=30,ysup=0.8){
   x=Severity[which(Severity$Guarantee==Factor),"Payment"]
   x_log=log(x)
   f1 <- fitdist(x_log, "gamma", method="mle")
@@ -89,7 +88,8 @@ calib_sev_distr=function(Severity,Factor,point_ajust=0,size=30,ysup=0.8){
 
 
 ### genarator ###
-Generation_sev_freq=function(nb_scenario, nb_risk, ){
+Generation_sev_freq=function(nb_scenario, param_freq, param_sev, ){
+  rgamma(n, shape, rate = 1, scale = 1/rate)
   PnL_QS_Ass=retention*(Premium-Severity) + Commission*(1-retention)*Premium
   PnL_QS_ReAss=(1-retention)*(Premium-Severity) - Commission*(1-retention)*Premium
 }
@@ -142,9 +142,10 @@ Pricing_QS(Premium, Severity, Priorite, Plafond, Commission, factor){
 
 
 ####### xxxxx #######
-library(fitdistrplus)
 
-summary(prem$PayFreq)
+# library(lubridate)
+
+library(fitdistrplus)
 
 nrow(sev) # 18057
 length(unique(sev$IDpol)) # 10917
