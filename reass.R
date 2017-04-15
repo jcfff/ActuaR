@@ -48,7 +48,7 @@ Nb_sinistre=function(Severity){
 Prep_Calib_Freq=function(Nb_sinistre, Premium, Factor){
   sub_severity=subset(Nb_sinistre, Guarantee==Factor)[,-3]
   prem=Premium[,startsWith(colnames(Premium), Factor)]
-  ind = temp1 > 0
+  ind = prem > 0
   prem=Premium[ind,]
   tmp=merge(prem, sub_severity, by="IDpol", all.x=TRUE)
   tmp$nb_sinistre=ifelse(is.na(tmp$nb_sinistre),0,tmp$nb_sinistre)
@@ -56,7 +56,12 @@ Prep_Calib_Freq=function(Nb_sinistre, Premium, Factor){
 }
 
 Nb_Guarantee=Nb_sinistre(sev03)
-Freq_Dam=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Damage")
+Freq_Windscreen=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Windscreen")
+Freq_Damage=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Damage")
+Freq_Fire=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Fire")
+Freq_TPL=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "TPL")
+Freq_Theft=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Theft")
+Freq_Other=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Other")
 
 
 # Severity: By Guarantee
