@@ -39,7 +39,6 @@ Prep_Calib=function(premium){
 }
 
 Nb_sinistre=function(Severity){
-  require(sqldf)  
   Nb_sev=sqldf("select distinct IDpol as IDpol, count(IDpol) as nb_sinistre, 
                Guarantee as Guarantee from Severity group by Idpol,Guarantee")
   Nb_sev
