@@ -54,5 +54,3 @@ calib_Sev=function(Severity,Factor,point_ajust=0,size=30,ysup=0.8){
 
 
 
-
-
