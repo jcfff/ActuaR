@@ -5,6 +5,7 @@ library(tcltk)
 library(fitdistrplus)
 library(gdata)
 
+
 source("function.R")
 
 # data #
@@ -22,7 +23,7 @@ prem=fremotor1prem;
 sev03=subset(sev, format(sev$OccurDate,'%Y')==2003)
 prem03=subset(prem, prem$Year==2003)
 
-# Calibration Frequency: By Guarantee
+# Calibration - Frequency (By Guarantee)
 Nb_Guarantee=Nb_sinistre(sev03)
 Freq_Windscreen=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Windscreen")
 Freq_Damage=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Damage")
@@ -31,21 +32,27 @@ Freq_TPL=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "TPL")
 Freq_Theft=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Theft")
 Freq_Other=Prep_Calib_Freq(Nb_Guarantee, Prep_Calib(prem03), "Other")
 
-# Calibration Severity: By Guarantee
-Est_Windscreen=calib_Sev(sev03,"Windscreen",point_ajust=4.5)
-Est_Damage=calib_Sev(sev03,"Damage",point_ajust=5)
-Est_Fire=calib_Sev(sev03,"Fire",point_ajust=6,size=10)
-Est_TPL=calib_Sev(sev03,"TPL",point_ajust=5)
-Est_Theft=calib_Sev(sev03,"Theft",point_ajust=5)
-Est_Other=calib_Sev(sev03,"Other",point_ajust=5,ysup=1)
+# Calibration - Severity (By Guarantee)
+Est_Windscreen_Sev=calib_Sev(sev03,"Windscreen",point_ajust=4.5)
+Est_Damage_Sev=calib_Sev(sev03,"Damage",point_ajust=5)
+Est_Fire_Sev=calib_Sev(sev03,"Fire",point_ajust=6,size=10)
+Est_TPL_Sev=calib_Sev(sev03,"TPL",point_ajust=5)
+Est_Theft_Sev=calib_Sev(sev03,"Theft",point_ajust=5)
+Est_Other_Sev=calib_Sev(sev03,"Other",point_ajust=5,ysup=1)
 
 
 ### genarator ###
-Generation_sev_freq=function(nb_scenario, param_freq, param_sev, ){
-  rgamma(n, shape, rate = 1, scale = 1/rate)
+# 1 generation of frequency+severity for all the policies with a certain type of Guarantee
+# distribution frequency - 
+# distribution severity - log Gamma
+Generation_sev_freq=function(nb_scenario, param_freq, param_sev){
+  rgamma(nb_scenario, shape=param_sev[1], rate = 1, scale = 1/rate)
+  
   PnL_QS_Ass=retention*(Premium-Severity) + Commission*(1-retention)*Premium
   PnL_QS_ReAss=(1-retention)*(Premium-Severity) - Commission*(1-retention)*Premium
 }
+
+
 
 
 ####### Implementation quota-share reinsurance #######
@@ -87,7 +94,6 @@ PnL_QS_03=(1-commission)*premium03 - (1-retention)*sevrite03
 Pricing_QS(Premium, Severity, Priorite, Plafond, Commission, factor){
   sub_severity=subset(severity, Guarantee==factor)
   sub_premium=subset(frequency, )
-  
   
   return(p);
 }
