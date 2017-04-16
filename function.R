@@ -43,7 +43,7 @@ calib_Sev=function(Severity,Factor,point_ajust=0,size=30,ysup=0.8){
   x_log=log(x)
   f1 <- fitdist(x_log, "gamma", method="mle")
   f2 <- fitdist(x_log[which(x_log>=point_ajust)], "gamma", method="mle")
-  pdf (file=paste("D:/ENSAE2016-2017/projet_R_images/",Factor,".pdf"), width = 6, height = 4, paper = "special") 
+  pdf (file=paste(getwd(),"/",Factor,".pdf",sep = ""), width = 6, height = 4, paper = "special") 
   hist(x_log,size,ylim=c(0,ysup),freq=FALSE,main=paste("Fitting of log_severity for guarantee",Factor))
   curve(dgamma(x, shape=f1$estimate[1], rate = f1$estimate[2]), add=TRUE,col = "blue")
   curve(dgamma(x, shape=f2$estimate[1], rate = f2$estimate[2]), add=TRUE,col = "red")
