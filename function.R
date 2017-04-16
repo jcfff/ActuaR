@@ -1,6 +1,6 @@
 # all functions
 
-####### Calibration Frequency Severity #######
+####### Calibration & Generation Frequency Severity #######
 
 # general data preparation for calibration and generation
 Prep_Calib=function(premium){
